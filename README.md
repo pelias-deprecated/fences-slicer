@@ -16,11 +16,11 @@ Note: you will need `node` and `npm` installed first. The easiest way to install
 
 When using `fences-slicer` from the command line, it expects the following config parameters in order to do its job.
 
-  | Name | Description |
-  | ---- | ----------- |
-  |`inputDir` | path to the directory containing geojson input files that need to be split into regions. Only `GEOJSON` files will be processed, all others will be skipped. Input files will not be modified. |
-  |`outputDir`| path to an existing directory that will contain output files after the slicer is done slicing. |
-  |`regions`  | JSON array of regions to extract out of the input files. Each region object must contain `name` and `box` properties. See sample config file for details. |
+| Name | Description |
+| :---- | :----------- |
+|`inputDir` | path to the directory containing geojson input files that need to be split into regions. Only `GEOJSON` files will be processed, all others will be skipped. Input files will not be modified. |
+|`outputDir`| path to an existing directory that will contain output files after the slicer is done slicing. |
+|`regions`  | JSON array of regions to extract out of the input files. Each region object must contain `name` and `box` properties. See sample config file for details. |
 
 
 The expected parameters can be specified via a config file like so:
