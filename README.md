@@ -25,7 +25,7 @@ When using `fences-slicer` from the command line, it expects the following confi
 
 The expected parameters can be specified via a config file like so:
 
-`$ node app.js --config=./etc/config.json`
+`$ fences-slicer --config=./etc/config.json`
 
 #### sample config file contents
 
@@ -43,7 +43,7 @@ The expected parameters can be specified via a config file like so:
 
 If not using a config file, or using a config file but need to override a particular parameter do this:
 
-`$ node app.js --inputDir=/path/different/from/config --config=./etc/config.json`
+`$ fences-slicer --inputDir=/path/different/from/config --config=./etc/config.json`
 
 
 ### dependency module
