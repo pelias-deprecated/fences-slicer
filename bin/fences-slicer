@@ -17,7 +17,7 @@ if (nconf.get('config')) {
 if (! (nconf.get('inputDir') && nconf.get('outputDir') && nconf.get('regions')) ) {
   console.error(colors.red('[Invalid usage]:'),
     'Must specify inputDir, outputDir, and regions. If using config file, use --config=<path>');
-  process.exit(1);
+  process.exit(-1);
 }
 
 /**
