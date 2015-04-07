@@ -28,7 +28,7 @@ if (! (nconf.get('inputDir') && nconf.get('outputDir') && nconf.get('regions')) 
 
   if (!fs.existsSync(nconf.get('inputDir'))) {
     console.error(colors.red('[Error]:'), 'Input directory does not exist');
-    process.exit(-1);
+    process.exit(1);
   }
 
   var inputFiles = fs.readdirSync(nconf.get('inputDir'));
@@ -63,11 +63,18 @@ if (! (nconf.get('inputDir') && nconf.get('outputDir') && nconf.get('regions')) 
       });
   }
 
-  console.log(inputFiles);
+  if (inputFiles.length === 0) {
+    console.error(colors.red('[Error]:'), 'No geojson files found for slicing!');
+    process.exit(1);
+  }
 
-  async.forEach(inputFiles, processFile, function () {
-      console.log('All done!');
-    });
+  console.log('Slicing these files: ', inputFiles);
+
+  async.forEach(inputFiles, processFile, function (code) {
+    if (code) {
+      process.exit(code);
+    }
+  });
 })();
 
 function getInputFile(dir, file) {
