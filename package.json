@@ -31,6 +31,7 @@
   "devDependencies": {
     "mocha": "^2.2.1",
     "precommit-hook": "1.0.7",
+    "proxyquire": "^1.4.0",
     "should": "^5.2.0",
     "tap-spec": "2.1.2",
     "tape": "3.0.3"

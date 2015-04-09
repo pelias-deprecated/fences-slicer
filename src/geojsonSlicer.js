@@ -12,7 +12,7 @@ var intersectionFilterStream = require('./intersectionFilterStream');
  * @param {object[]} regions [{ outputFile, box }]
  * @param {function} callback
  */
-function extractRegion(inputFile, regions, callback) {
+function extractRegions(inputFile, regions, callback) {
   validatePath(inputFile);
 
   // Because of the offshoot streams, we must keep track of how many were started
@@ -102,4 +102,4 @@ function validatePath(path) {
   }
 }
 
-module.exports.extractRegion = extractRegion;
+module.exports.extractRegions = extractRegions;

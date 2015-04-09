@@ -66,11 +66,11 @@ describe('GeojsonSlicer', function () {
     fs.unlink(context.inputFile);
   });
 
-  describe('extractRegion', function () {
+  describe('extractRegions', function () {
 
     it('should extract polygons when covering region', function (done) {
       var regions = [{outputFile: context.outputFile, box: context.regions.inside}];
-      slicer.extractRegion(context.inputFile, regions, function () {
+      slicer.extractRegions(context.inputFile, regions, function () {
         areaShouldBeExtracted(context.outputFile);
         done();
       });
@@ -78,7 +78,7 @@ describe('GeojsonSlicer', function () {
 
     it('should not extract polygons when outside region', function (done) {
       var regions = [{outputFile: context.outputFile, box: context.regions.outside}];
-      slicer.extractRegion(context.inputFile, regions, function () {
+      slicer.extractRegions(context.inputFile, regions, function () {
         areaShouldNotBeExtracted(context.outputFile);
         done();
       });
@@ -86,7 +86,7 @@ describe('GeojsonSlicer', function () {
 
     it('should extract polygons when overlapping region', function (done) {
       var regions = [{outputFile: context.outputFile, box: context.regions.overlap}];
-      slicer.extractRegion(context.inputFile, regions, function () {
+      slicer.extractRegions(context.inputFile, regions, function () {
         areaShouldBeExtracted(context.outputFile);
         done();
       });
@@ -94,7 +94,7 @@ describe('GeojsonSlicer', function () {
 
     it('should extract polygons when inside region', function (done) {
       var regions = [{outputFile: context.outputFile, box: context.regions.cover}];
-      slicer.extractRegion(context.inputFile, regions, function () {
+      slicer.extractRegions(context.inputFile, regions, function () {
         areaShouldBeExtracted(context.outputFile);
         done();
       });
