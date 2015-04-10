@@ -63,7 +63,7 @@ var regions = [
     }
 ];
 
-slicer.extractRegion(inputFile, regions, function () {
+slicer.extractRegions(inputFile, regions, function () {
     console.log('hello fence slices!');
 });
 ```

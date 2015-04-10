@@ -1,6 +1,6 @@
 {
   "name": "fences-slicer",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Split large geojson file into smaller region files",
   "keywords": [
     "geojson",
@@ -21,6 +21,7 @@
   "dependencies": {
     "async": "^0.9.0",
     "colors": "^1.0.3",
+    "fs-extra": "^0.18.0",
     "geojson-stream": "0.0.0",
     "nconf": "^0.7.1",
     "terminus": "^1.0.11",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "mocha": "^2.2.1",
     "precommit-hook": "1.0.7",
+    "proxyquire": "^1.4.0",
     "should": "^5.2.0",
     "tap-spec": "2.1.2",
     "tape": "3.0.3"
