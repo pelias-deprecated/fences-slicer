@@ -53,8 +53,9 @@ function passthroughStream(stream) {
       this.push(data);
       callback();
     },
-    function end() {
+    function end(callback) {
       stream.end();
+      callback();
     }
   );
 }

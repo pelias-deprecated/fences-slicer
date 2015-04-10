@@ -1,4 +1,3 @@
-/* jshint ignore:start */
 var fs = require('fs-extra');
 var path = require('path');
 var async = require('async');
@@ -50,19 +49,19 @@ module.exports = function run(regions, inputDir, outputDir) {
  * @param {function} callback
  * @returns {*}
  */
-function processFile(regions, inputDir, outputDir, inputFile, callback) {
+function processFile(regions, inputDir, outputDir, inputFile, callback) { // jshint ignore:line
 
   // skip non geojson files
   if (path.extname(inputFile) !== '.geojson') {
-    return callback();
+    process.nextTick(callback);
+    return;
   }
 
-  var regionResults = [];
-  regions.forEach(function (region) {
-    regionResults.push({
+  var regionResults = regions.map(function (region) {
+    return {
       outputFile: getOutputFile(outputDir, inputFile, region.name),
       box: region.box
-    });
+    };
   });
 
   geojsonSlicer.extractRegions(
@@ -83,5 +82,3 @@ function getOutputFile(dir, file, region) {
   fs.ensureDirSync(path.join(dir, region));
   return path.join(dir, region, file);
 }
-
-/* jshint ignore:end */

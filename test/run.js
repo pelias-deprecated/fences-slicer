@@ -35,6 +35,7 @@ describe('run', function () {
     var slicerMock = {
       extractRegions: function (inputFile, regs, callback) {
         checks.extractRegionCalled[inputFile] = true;
+        regs[0].box.should.equal(regions[0].box);
 
         switch(inputFile) {
           case inputDir + '/' + files[0]:
