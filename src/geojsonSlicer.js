@@ -53,10 +53,10 @@ function createRegionStreams(regions, endCounter) {
  */
 function extractRegionOffshoot(outputFile, region, callback) {
   var boundingBox = turf.bboxPolygon([
-    region.sw.longitude,
-    region.sw.latitude,
-    region.ne.longitude,
-    region.ne.latitude
+    region.left,
+    region.bottom,
+    region.right,
+    region.top
   ]);
   var inputStream = intersectionFilterStream(boundingBox);
 
@@ -79,12 +79,10 @@ function extractRegionOffshoot(outputFile, region, callback) {
  * @param {object} region
  */
 function validateRegion(region) {
-  if (region.hasOwnProperty('sw') &&
-      region.hasOwnProperty('ne') &&
-      region.sw.hasOwnProperty('latitude') &&
-      region.ne.hasOwnProperty('latitude') &&
-      region.sw.hasOwnProperty('longitude') &&
-      region.ne.hasOwnProperty('longitude')) {
+  if (region.hasOwnProperty('top') &&
+      region.hasOwnProperty('bottom') &&
+      region.hasOwnProperty('left') &&
+      region.hasOwnProperty('right')) {
     return;
   }
   throw new Error('Invalid region', region);

@@ -37,14 +37,10 @@ The expected parameters can be specified via a config file like so:
     {
       "name": "USA",
       "box": {
-        "sw": {
-          "longitude": -124.848974,
-          "latitude": 24.396308
-        },
-        "ne": {
-          "longitude": -66.885444,
-          "latitude": 49.384358
-        }
+        "left": -124.848974,
+        "bottom": 24.396308
+        "right": -66.885444,
+        "top": 49.384358
       }
     }
   ]
@@ -69,14 +65,10 @@ var inputFile = '/some/dir/planet-fences/planet-level-2.geojson';
 var regions = [{
   outputFile: '/some/dir/USA-fences/USA-level-2.geojson',
   box: {
-    sw: {
-      longitude: -124.848974,
-      latitude: 24.396308
-    },
-    ne: {
-      longitude: -66.885444,
-      latitude: 49.384358
-    }
+    left: -124.848974,
+    bottom: 24.396308
+    right: -66.885444,
+    top: 49.384358
   }
 }];
 
