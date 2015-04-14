@@ -34,8 +34,18 @@ The expected parameters can be specified via a config file like so:
   "inputDir": "/some/dir/planet-latest-fences",
   "outputDir": "/some/dir/planet-latest-fences-regions",
   "regions": [
-    { "name": "USA",
-      "box": [-66.885444, 49.384358, -124.848974, 24.396308]
+    {
+      "name": "USA",
+      "box": {
+        "sw": {
+          "longitude": -124.848974,
+          "latitude": 24.396308
+        },
+        "ne": {
+          "longitude": -66.885444,
+          "latitude": 49.384358
+        }
+      }
     }
   ]
 }
@@ -56,15 +66,22 @@ var slicer = require('fences-slicer');
 
 var inputFile = '/some/dir/planet-fences/planet-level-2.geojson';
 
-var regions = [
-    {
-        outputFile: '/some/dir/USA-fences/USA-level-2.geojson',
-        box: [-66.885444, 49.384358, -124.848974, 24.396308]
+var regions = [{
+  outputFile: '/some/dir/USA-fences/USA-level-2.geojson',
+  box: {
+    sw: {
+      longitude: -124.848974,
+      latitude: 24.396308
+    },
+    ne: {
+      longitude: -66.885444,
+      latitude: 49.384358
     }
-];
+  }
+}];
 
-slicer.extractRegions(inputFile, regions, function () {
-    console.log('hello fence slices!');
+slicer.extractRegions(inputFile, regions, function (exitCode) {
+  console.log('hello fence slices!');
 });
 ```
 
