@@ -85,12 +85,14 @@ function validateRegion(region) {
       region.hasOwnProperty('right')) {
     return;
   }
-  throw new Error('Invalid region', region);
+  console.error('Invalid region', region);
+  process.exit(1);
 }
 
 function validatePath(path) {
   if (!fs.existsSync(path)) {
-    throw new Error(path + ' does not exist');
+    console.error(path + ' does not exist');
+    process.exit(1);
   }
 }
 
