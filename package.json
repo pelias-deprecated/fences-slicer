@@ -24,7 +24,6 @@
     "fs-extra": "^0.18.0",
     "geojson-stream": "0.0.0",
     "nconf": "^0.7.1",
-    "terminus": "^1.0.11",
     "through2": "^0.6.3",
     "turf": "^2.0.0"
   },

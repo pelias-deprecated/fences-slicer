@@ -15,11 +15,11 @@ describe('GeojsonSlicer', function () {
       type: 'FeatureCollection',
       features:[
         {
-          'type': 'Feature',
-          'properties': { 'name': 'admin_area' },
-          'geometry': {
-            'type': 'Polygon',
-            'coordinates': [
+          type: 'Feature',
+          properties: { 'name': 'admin_area' },
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
               [
                 [
                   -74.4488525390625,
@@ -55,10 +55,30 @@ describe('GeojsonSlicer', function () {
     fs.writeFileSync(context.inputFile, JSON.stringify(context.data));
 
     context.regions = {
-      inside: [-74.26895141601562, 40.73997376331186, -73.729248046875, 41.00477542222949],
-      outside: [-74.014892578125, 41.19828983779905, -73.62075805664062, 41.469486382476376],
-      overlap: [-74.94598388671875, 40.861602479810266, -74.22637939453125, 41.226183305514596],
-      cover: [-74.77569580078125, 40.405130697527866, -73.01788330078125, 41.236511201246216]
+      inside: {
+        left: -74.26895141601562,
+        bottom: 40.73997376331186,
+        right: -73.729248046875,
+        top: 41.00477542222949
+      },
+      outside: {
+        left: -74.014892578125,
+        bottom: 41.19828983779905,
+        right: -73.62075805664062,
+        top: 41.469486382476376
+      },
+      overlap: {
+        left: -74.94598388671875,
+        bottom: 40.861602479810266,
+        right: -74.22637939453125,
+        top: 41.226183305514596
+      },
+      cover: {
+        left: -74.77569580078125,
+        bottom: 40.405130697527866,
+        right: -73.01788330078125,
+        top: 41.236511201246216
+      }
     };
   });
 

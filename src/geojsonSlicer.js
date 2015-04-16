@@ -1,6 +1,4 @@
 var fs = require('fs-extra');
-var through = require('through2');
-var terminus = require('terminus');
 var turf = require('turf');
 var geojsonStream = require('geojson-stream');
 var intersectionFilterStream = require('./intersectionFilterStream');
@@ -27,37 +25,21 @@ function extractRegions(inputFile, regions, callback) {
   }
 
   // create input stream and pipe to geojson parser
-  var stream = fs.createReadStream(inputFile).pipe(geojsonStream.parse());
+  var stream = fs.createReadStream(inputFile)
+    .pipe(geojsonStream.parse());
 
-  // in order to avoid parsing the large input file more than once, we need to
-  // pipe the data through to all the region extraction streams, one after the other.
-  regions.forEach(function (region) {
-    validateRegion(region.box);
-    stream = stream.pipe(passthroughStream(extractRegionOffshoot(region.outputFile, region.box, endCounter)));
+  // pipe to each region stream
+  var regionStreams = createRegionStreams(regions, endCounter);
+  regionStreams.forEach(function (s) {
+    stream.pipe(s);
   });
-
-  stream.pipe(terminus.devnull({objectMode: true}));
 }
 
-/**
- * Create a pass-through stream that will write data
- * to the input stream and pass it along as is.
- *
- * @param {Stream} stream
- * @returns {Stream}
- */
-function passthroughStream(stream) {
-  return through.obj(
-    function pass(data, enc, callback) {
-      stream.write(data);
-      this.push(data);
-      callback();
-    },
-    function end(callback) {
-      stream.end();
-      callback();
-    }
-  );
+function createRegionStreams(regions, endCounter) {
+  return regions.map(function (region) {
+    validateRegion(region.box);
+    return extractRegionOffshoot(region.outputFile, region.box, endCounter);
+  });
 }
 
 /**
@@ -70,7 +52,13 @@ function passthroughStream(stream) {
  * @returns {Stream}
  */
 function extractRegionOffshoot(outputFile, region, callback) {
-  var inputStream = intersectionFilterStream(turf.bboxPolygon(region));
+  var boundingBox = turf.bboxPolygon([
+    region.left,
+    region.bottom,
+    region.right,
+    region.top
+  ]);
+  var inputStream = intersectionFilterStream(boundingBox);
 
   var stream = inputStream
     .pipe(geojsonStream.stringify())
@@ -91,15 +79,20 @@ function extractRegionOffshoot(outputFile, region, callback) {
  * @param {object} region
  */
 function validateRegion(region) {
-  if (region instanceof Array && region.length === 4 ) {
+  if (region.hasOwnProperty('top') &&
+      region.hasOwnProperty('bottom') &&
+      region.hasOwnProperty('left') &&
+      region.hasOwnProperty('right')) {
     return;
   }
-  throw new Error('Invalid region', region);
+  console.error('Invalid region', region);
+  process.exit(1);
 }
 
 function validatePath(path) {
   if (!fs.existsSync(path)) {
-    throw new Error(path + ' does not exist');
+    console.error(path + ' does not exist');
+    process.exit(1);
   }
 }
 

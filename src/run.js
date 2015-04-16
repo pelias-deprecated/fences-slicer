@@ -1,8 +1,8 @@
 var fs = require('fs-extra');
 var path = require('path');
 var async = require('async');
-var geojsonSlicer = require('./geojsonSlicer');
 var colors = require('colors');
+var fork = require('child_process').fork;
 
 /**
  * Create output files with any polygons
@@ -19,7 +19,9 @@ module.exports = function run(regions, inputDir, outputDir) {
     process.exit(1);
   }
 
-  var inputFiles = fs.readdirSync(inputDir);
+  var inputFiles = fs.readdirSync(inputDir).filter(function (file) {
+    return path.extname(file) === '.geojson';
+  });
 
   if (inputFiles.length === 0) {
     console.error(colors.red('[Error]:'), 'No geojson files found for slicing!');
@@ -32,9 +34,7 @@ module.exports = function run(regions, inputDir, outputDir) {
     inputFiles,
     processFile.bind(null, regions, inputDir, outputDir),
     function (code) {
-      if (code) {
-        process.exit(code);
-      }
+      process.exit(code || 0);
     }
   );
 };
@@ -51,12 +51,6 @@ module.exports = function run(regions, inputDir, outputDir) {
  */
 function processFile(regions, inputDir, outputDir, inputFile, callback) { // jshint ignore:line
 
-  // skip non geojson files
-  if (path.extname(inputFile) !== '.geojson') {
-    process.nextTick(callback);
-    return;
-  }
-
   var regionResults = regions.map(function (region) {
     return {
       outputFile: getOutputFile(outputDir, inputFile, region.name),
@@ -64,14 +58,27 @@ function processFile(regions, inputDir, outputDir, inputFile, callback) { // jsh
     };
   });
 
-  geojsonSlicer.extractRegions(
-    getInputFile(inputDir, inputFile),
-    regionResults,
-    function () {
-      console.log('Extractions done for ', inputFile);
+  var child = fork(__dirname + '/childProcess.js', [], { silent: false });
+
+  child.on('exit', function (code) {
+    console.log(colors.blue('[Info]:'), 'Finished slicing', inputFile);
+    if (code !== 0) {
+      callback(code || 100);
+    }
+    else {
       callback();
     }
-  );
+  });
+
+  console.log(colors.blue('[Info]:'), 'Starting on', inputFile);
+
+  child.send({
+    type: 'start',
+    data: {
+      inputFile: getInputFile(inputDir, inputFile),
+      regions: regionResults
+    }
+  });
 }
 
 function getInputFile(dir, file) {
