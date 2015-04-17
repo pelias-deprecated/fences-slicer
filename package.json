@@ -1,6 +1,6 @@
 {
   "name": "fences-slicer",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Split large geojson file into smaller region files",
   "keywords": [
     "geojson",
