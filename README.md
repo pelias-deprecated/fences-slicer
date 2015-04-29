@@ -77,6 +77,11 @@ slicer.extractRegions(inputFile, regions, function (exitCode) {
 });
 ```
 
+## coverage
+
+`$ npm run coverage`
+
+
 ## test
 
 `$ npm test`

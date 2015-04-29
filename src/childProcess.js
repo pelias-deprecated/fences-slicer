@@ -32,3 +32,5 @@ function slice(inputFile, regions) {
     process.nextTick(process.exit.bind(null, 0));
   });
 }
+
+module.exports.slice = slice;
