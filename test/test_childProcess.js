@@ -5,19 +5,20 @@ module.exports.tests = {};
 module.exports.tests.interface = function(test) {
   test('slice', function (t) {
 
-    var inputFile = 'someInputFile.geojson';
-    var regions = [ 'foo', 'bar' ];
+    var params = {
+      inputFile: 'someInputFile.geojson',
+      regions: ['foo', 'bar']
+    };
 
     process.send = function (msg) {
       t.equal(msg.type, 'done', 'done message sent');
-      t.equal(msg.data.inputFile, inputFile, 'input file sent in done message');
+      t.equal(msg.data.inputFile, params.inputFile, 'input file sent in done message');
       t.end();
     };
 
     var slicerMock = {
-      extractRegions: function (_inputFile, _regions, callback) {
-        t.equal(_inputFile, inputFile, 'input file passed to slicer');
-        t.equal(_regions, regions, 'regions passed to slicer');
+      extractRegions: function (_params, callback) {
+        t.equal(params, params, 'params passed to slicer');
         t.equal(typeof callback, 'function', 'callback is a function');
         callback();
       }
@@ -27,7 +28,7 @@ module.exports.tests.interface = function(test) {
 
     process.emit('message', {type: 'not_important'});
 
-    process.emit('message', {type: 'start', data: { inputFile: inputFile, regions: regions }});
+    process.emit('message', {type: 'start', data: params});
   });
 };
 
