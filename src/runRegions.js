@@ -11,17 +11,17 @@ module.exports = function run(inputRegionFile, outputRegionFile) {
     .pipe(through2.obj(function (data, enc, cb) {
       try {
         isCountry(data);
-        data.properties['name:FENCES'] = sanitizeName(data);
-        dedupe(data);
+        var cleanName = sanitizeName(data);
+        dedupe(cleanName);
 
         data = simplify(data, 0.001);
 
-        names.push(data.properties['name:FENCES']);
+        names.push(cleanName);
 
         var copy = {
           properties: {
-            'name': data.properties['name:en'],
-            'name:FENCES': data.properties['name:FENCES']
+            'name:display': getName(data),
+            'name': cleanName
           },
           geometry: data.geometry,
           type: data.type
@@ -38,12 +38,12 @@ module.exports = function run(inputRegionFile, outputRegionFile) {
     .pipe(fs.createWriteStream(outputRegionFile));
 
   stream.on('finish', function () {
-    console.log('\nAll done!!!\nRegions file generated with ' + names.length + ' regions');
+    console.log('\nRegions file generated with ' + names.length + ' regions');
   });
 };
 
 function sanitizeName(obj) {
-  var name = obj.properties['name:en']; // || obj.properties['name'];
+  var name = getName(obj);
   var clean = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
   var check = name.replace(/[_]/gi, '');
   if (clean.length > 0 && check.length > 0) {
@@ -53,9 +53,13 @@ function sanitizeName(obj) {
   throw new Error('Could not sanitize name: ' + obj.properties.name);
 }
 
-function dedupe(obj) {
-  if (names.indexOf(obj.properties['name:FENCES']) !== -1) {
-    throw new Error('Duplicate object not added: ' + obj.properties.name);
+function getName(obj) {
+  return obj.properties['name:en'] || obj.properties.name;
+}
+
+function dedupe(name) {
+  if (names.indexOf(name) !== -1) {
+    throw new Error('Duplicate object not added: ' + name);
   }
 }
 
