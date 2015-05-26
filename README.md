@@ -12,6 +12,13 @@ Note: you will need `node` and `npm` installed first. The easiest way to install
 
 ## usage
 
+### preparing regions file
+
+You can feed a geojson file through the `fences-regions` command to sanitize and prepare the file to be used in the `fences-slicer` step.
+
+`$ fences-regions --inputGeojson=/etc/planet-fences/admin_level_2.geojson --outputFile=./regions.geojson`
+
+
 ### standalone utility
 
 When using `fences-slicer` from the command line, it expects the following config parameters in order to do its job.

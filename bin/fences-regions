@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+
+var run = require('./../src/runRegions');
+var nconf = require('nconf');
+var colors = require('colors');
+
+// setup config
+nconf.argv().env();
+var config = nconf.get();
+
+if (! (config.inputGeojson && config.outputFile) ) {
+  console.error(colors.red('[Invalid usage]:'),
+    'Must specify inputGeojson and outputFile');
+  process.exit(1);
+}
+
+/**
+ * Execute slicing process. Create output files with any polygons
+ * overlapping the specified regions.
+ */
+run(config.inputGeojson, config.outputFile);
