@@ -5,12 +5,12 @@ var simplify = require('simplify-geojson');
 
 var names = [];
 
-module.exports = function run(inputRegionFile, outputRegionFile) {
+module.exports = function run(inputRegionFile, outputRegionFile, wanted) {
   var stream = fs.createReadStream(inputRegionFile)
     .pipe(geojsonStream.parse())
     .pipe(through2.obj(function (data, enc, cb) {
       try {
-        isCountry(data);
+        isCountry(data, wanted);
         var cleanName = sanitizeName(data);
         dedupe(cleanName);
 
@@ -44,8 +44,8 @@ module.exports = function run(inputRegionFile, outputRegionFile) {
 
 function sanitizeName(obj) {
   var name = getName(obj);
-  var clean = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-  var check = name.replace(/[_]/gi, '');
+  var clean = name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+  var check = name.replace(/[-]/gi, '');
   if (clean.length > 0 && check.length > 0) {
     return clean;
   }
@@ -63,7 +63,11 @@ function dedupe(name) {
   }
 }
 
-function isCountry(obj) {
+function isCountry(obj, wanted) {
+  if (wanted && wanted.indexOf(getName(obj)) === -1) {
+    throw new Error('Not wanted: ' + obj.properties.name);
+  }
+
   if (!obj.properties.hasOwnProperty('flag')) {
     throw new Error('No flag: ' + obj.properties.name);
   }

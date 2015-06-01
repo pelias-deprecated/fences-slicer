@@ -4,6 +4,7 @@ var through2 = require('through2');
 var geojsonStream = require('geojson-stream');
 var intersectionFilterStream = require('./intersectionFilterStream');
 var progress = require('progress-stream');
+var stats = require('./stats');
 
 
 /**
@@ -27,8 +28,8 @@ function extractRegions(params, callback) {
     time: 1000
   });
 
-  progressStream.on('progress', function(p) {
-    console.log(params.inputFile + ' [ ' + Math.floor(p.percentage) + '% ]');
+  progressStream.on('progress', function (p) {
+    stats.set('progress:' + params.inputFile, Math.floor(p.percentage));
   });
 
   // Because of the offshoot streams, we must keep track of how many were started

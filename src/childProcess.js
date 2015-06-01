@@ -1,4 +1,5 @@
 var geojsonSlicer = require('./geojsonSlicer');
+var stats = require('./stats');
 
 /**
  * This childProcess responds to a start message and will
@@ -24,13 +25,21 @@ process.on('message', function (payload) {
  * @param {string} params.regionFile GeoJSON file with region polygons
  */
 function slice(params) {
-  geojsonSlicer.extractRegions(params, function () {
-    process.send({
-      type: 'done',
-      data: { inputFile: params.inputFile }
+  try {
+
+    geojsonSlicer.extractRegions(params, function () {
+      stats.stop();
+      process.send({
+        type: 'done',
+        data: {inputFile: params.inputFile}
+      });
+      process.nextTick(process.exit.bind(null, 0));
     });
-    process.nextTick(process.exit.bind(null, 0));
-  });
+  }
+  catch( ex ) {
+    console.log(ex);
+    process.exit(500);
+  }
 }
 
 module.exports.slice = slice;

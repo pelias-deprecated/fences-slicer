@@ -14,8 +14,12 @@ if (! (config.inputGeojson && config.outputFile) ) {
   process.exit(1);
 }
 
+if (config.wanted) {
+  config.wanted = config.wanted.split(',');
+}
+
 /**
  * Execute slicing process. Create output files with any polygons
  * overlapping the specified regions.
  */
-run(config.inputGeojson, config.outputFile);
+run(config.inputGeojson, config.outputFile, config.wanted);
