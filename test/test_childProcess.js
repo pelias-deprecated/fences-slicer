@@ -10,17 +10,12 @@ module.exports.tests.interface = function(test) {
       regions: ['foo', 'bar']
     };
 
-    process.send = function (msg) {
-      t.equal(msg.type, 'done', 'done message sent');
-      t.equal(msg.data.inputFile, params.inputFile, 'input file sent in done message');
-      t.end();
-    };
-
     var slicerMock = {
       extractRegions: function (_params, callback) {
         t.equal(params, params, 'params passed to slicer');
         t.equal(typeof callback, 'function', 'callback is a function');
         callback();
+        t.end();
       }
     };
 

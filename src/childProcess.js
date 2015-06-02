@@ -29,10 +29,6 @@ function slice(params) {
 
     geojsonSlicer.extractRegions(params, function () {
       stats.stop();
-      process.send({
-        type: 'done',
-        data: {inputFile: params.inputFile}
-      });
       process.nextTick(process.exit.bind(null, 0));
     });
   }

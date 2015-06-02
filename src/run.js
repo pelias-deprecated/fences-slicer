@@ -56,6 +56,7 @@ function processFile(regionFile, inputDir, outputDir, inputFile, callback) { // 
   child.on('exit', function (code) {
     console.log(colors.blue('[Info]:'), 'Finished slicing', inputFile);
     if (code !== 0) {
+      console.error(colors.red('[Error]:'), 'Finished with error code', code, inputFile);
       callback(code || 100);
     }
     else {

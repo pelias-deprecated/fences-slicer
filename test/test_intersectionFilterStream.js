@@ -90,7 +90,12 @@ module.exports.tests.interface = function(test) {
         throw error;
       }
     };
-    var filter = proxyquire('../src/intersectionFilterStream', { './util': utilsMock });
+
+    var lookupMock = function (/*featureColl*/) {
+      return {};
+    };
+
+    var filter = proxyquire('../src/intersectionFilterStream', { './util': utilsMock, 'polygon-lookup': lookupMock });
 
     var errorStream = {
       write: function (err) {
@@ -101,7 +106,7 @@ module.exports.tests.interface = function(test) {
       }
     };
 
-    var stream = filter(regionPoly, errorStream);
+    var stream = filter('my_stream', regionPoly, errorStream);
     stream.write(data);
   });
 };

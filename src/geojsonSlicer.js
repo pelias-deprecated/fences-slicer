@@ -99,7 +99,7 @@ function createRegionStreams(params, endCounter, callback) {
  * @returns {Stream}
  */
 function extractRegionOffshoot(outputFile, region, callback) {
-  var inputStream = intersectionFilterStream(region);
+  var inputStream = intersectionFilterStream(outputFile, region);
 
   var stream = inputStream
     .pipe(geojsonStream.stringify())

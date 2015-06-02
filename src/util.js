@@ -1,4 +1,5 @@
 var turf = require('turf');
+var stats = require('./stats');
 
 module.exports.getFeatureCollection = function getFeatureCollection(features) {
   return turf.featurecollection(features);
@@ -12,7 +13,15 @@ module.exports.getBoundingBox = function getBoundingBox(feature) {
   if( feature.geometry.type === 'MultiPolygon' ) {
     var boxes = [];
     feature.geometry.coordinates.forEach(function (points) {
-      boxes.push(turf.bboxPolygon(turf.extent(turf.polygon(points))));
+      try {
+        boxes.push(turf.bboxPolygon(turf.extent(turf.polygon(points))));
+      }
+      catch (ex) {
+        // attempt to use turf bbox algorithm, if exception thrown use brute force min/max approach
+
+        stats.increment('util_bbox_exceptions');
+        boxes.push(turf.bboxPolygon(boundingBoxAroundPolyCoords(points[0])));
+      }
     });
     var collection = turf.featurecollection(boxes);
     collection = turf.merge(collection);
@@ -22,6 +31,20 @@ module.exports.getBoundingBox = function getBoundingBox(feature) {
 
   throw new Error('[GeoUtils]: Bounding box should be Polygon or MultiPolygon');
 };
+
+function boundingBoxAroundPolyCoords(coords) {
+  var xAll = [], yAll = [];
+
+  for (var i = 0; i < coords[0].length; i++) {
+    xAll.push(coords[0][i][1]);
+    yAll.push(coords[0][i][0]);
+  }
+
+  xAll = xAll.sort(function (a, b) { return a - b; });
+  yAll = yAll.sort(function (a, b) { return a - b; });
+
+  return [[xAll[0], yAll[0]], [xAll[xAll.length - 1], yAll[yAll.length - 1]]];
+}
 
 module.exports.isInside = function isInside(bbox, feature) {
   var intersection = turf.intersect(bbox, feature);
@@ -61,6 +84,11 @@ module.exports.getCenter = function getCenter(feature, tolerance) {
   tolerance = (tolerance === void 0 || isNaN(tolerance) || tolerance === 0) ? 0.1 : Math.abs(tolerance);
 
   var area = turf.area(feature);
+
+  // if area is really large, process runs out of memory if tolerance is 0.1
+  if (area > 10000000000.00) {
+    tolerance = 0.001;
+  }
 
   // max number of points to force a simplify
   var maxcount = (fine) ? 500 : 250;

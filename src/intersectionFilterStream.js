@@ -8,11 +8,12 @@ var simplify = require('simplify-geojson');
  * Returns a through stream that only propagates data that overlaps the
  * region specified at creation time
  *
+ * @param {string} streamId identifier for stream instance
  * @param {[]} regionPoly bounding region with which incoming data should overlap
  * @param {Stream} [errorStream] optional error stream, defaults to stderr
  * @returns {*}
  */
-module.exports = function intersectionFilterStream(regionPoly, errorStream)
+module.exports = function intersectionFilterStream(streamId, regionPoly, errorStream)
 {
   var bbox = geoUtils.getBoundingBox(regionPoly);
   var lookup = new PolygonLookup(geoUtils.getFeatureCollection([regionPoly]));
@@ -24,7 +25,9 @@ module.exports = function intersectionFilterStream(regionPoly, errorStream)
       if( geoUtils.isInside(bbox, bboxData) ) {
         stats.increment('bbox_overlap');
 
-        if (geoUtils.isPointInside(lookup, geoUtils.getCenter(simplify(data, 0.001)))) {
+        var center = geoUtils.getCenter(simplify(data, 0.001));
+
+        if (geoUtils.isPointInside(lookup, center)) {
           stats.increment('centroid_inside_region');
           this.push(data);
         }
@@ -37,13 +40,13 @@ module.exports = function intersectionFilterStream(regionPoly, errorStream)
       }
     }
     catch (ex) {
-      handleException(errorStream, data, ex);
+      handleException(streamId, errorStream, data, ex);
     }
     callback();
   });
 };
 
-function handleException(errorStream, data, ex) {
+function handleException(streamId, errorStream, data, ex) {
   stats.increment('exceptions');
 
   var err = {
@@ -57,8 +60,8 @@ function handleException(errorStream, data, ex) {
   }
   else {
     err.data = {
-      name: data.name
+      properties: data.properties
     };
-    console.error('[Exception]:', JSON.stringify(err), ex.stack);
+    console.error('[Exception]: ', '[' + streamId + ']', JSON.stringify(err, null, 2), ex.stack);
   }
 }
