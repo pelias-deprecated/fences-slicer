@@ -1,6 +1,6 @@
 {
   "name": "fences-slicer",
-  "version": "0.1.0",
+  "version": "0.2.6",
   "description": "Split large geojson file into smaller region files",
   "keywords": [
     "geojson",
@@ -12,7 +12,8 @@
   "author": "mapzen",
   "main": "index.js",
   "bin": {
-    "fences-slicer": "./bin/fences-slicer"
+    "fences-slicer": "./bin/fences-slicer",
+    "fences-regions": "./bin/fences-regions"
   },
   "scripts": {
     "start": "time node app.js",
@@ -24,7 +25,11 @@
     "colors": "^1.0.3",
     "fs-extra": "^0.18.0",
     "geojson-stream": "0.0.0",
+    "microtime": "^1.4.2",
     "nconf": "^0.7.1",
+    "polygon-lookup": "^1.0.2",
+    "progress-stream": "^1.1.1",
+    "simplify-geojson": "0.0.2",
     "through2": "^0.6.3",
     "turf": "^2.0.0"
   },

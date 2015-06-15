@@ -12,6 +12,13 @@ Note: you will need `node` and `npm` installed first. The easiest way to install
 
 ## usage
 
+### preparing regions file
+
+You can feed a geojson file through the `fences-regions` command to sanitize and prepare the file to be used in the `fences-slicer` step.
+
+`$ fences-regions --inputGeojson=/etc/planet-fences/admin_level_2.geojson --outputFile=./regions.geojson`
+
+
 ### standalone utility
 
 When using `fences-slicer` from the command line, it expects the following config parameters in order to do its job.
@@ -20,7 +27,7 @@ When using `fences-slicer` from the command line, it expects the following confi
 | :---- | :----------- |
 |`inputDir` | path to the directory containing geojson input files that need to be split into regions. Only `GEOJSON` files will be processed, all others will be skipped. Input files will not be modified. |
 |`outputDir`| path to an existing directory that will contain output files after the slicer is done slicing. |
-|`regions`  | JSON array of regions to extract out of the input files. Each region object must contain `name` and `box` properties. See sample config file for details. |
+|`regionFile`  | Geojson file containing regions to be used when slicing. Each region feature must have a `name` in properties. |
 
 
 The expected parameters can be specified via a config file like so:
@@ -33,17 +40,7 @@ The expected parameters can be specified via a config file like so:
 {
   "inputDir": "/some/dir/planet-latest-fences",
   "outputDir": "/some/dir/planet-latest-fences-regions",
-  "regions": [
-    {
-      "name": "USA",
-      "box": {
-        "left": -124.848974,
-        "bottom": 24.396308
-        "right": -66.885444,
-        "top": 49.384358
-      }
-    }
-  ]
+  "regionFile": "/some/geojson/file..geojson"
 }
 ```
 
@@ -60,20 +57,15 @@ of regions, where each region has an output file and box. See example below.
 ```javascript
 var slicer = require('fences-slicer');
 
-var inputFile = '/some/dir/planet-fences/planet-level-2.geojson';
+var param = {
+  inputDir: '/some/dir/planet-fences/',
+  inputFile: 'planet-level-2.geojson',
+  outputDir: '/some/dir/to/throw/output/',
+  regionFile: '/etc/my/regions.geojson'
+};
 
-var regions = [{
-  outputFile: '/some/dir/USA-fences/USA-level-2.geojson',
-  box: {
-    left: -124.848974,
-    bottom: 24.396308
-    right: -66.885444,
-    top: 49.384358
-  }
-}];
-
-slicer.extractRegions(inputFile, regions, function (exitCode) {
-  console.log('hello fence slices!');
+slicer.extractRegions(params, function () {
+  console.log('fences sliced successfully!');
 });
 ```
 

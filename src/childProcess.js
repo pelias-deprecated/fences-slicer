@@ -1,36 +1,41 @@
 var geojsonSlicer = require('./geojsonSlicer');
+var stats = require('./stats');
 
 /**
  * This childProcess responds to a start message and will
  * slice an input file into specified regions
  *
- * payload is expected to have the following properties:
- *
- *  {string} type 'start'
- *  {object} data
- *  {string} data.inputFile
- *  {[]}     data.regions [{outputFile: {string}, box: [lat1,lon1,lat2,lon1]}]
+ * @param {object} payload
+ * @param {string} payload.type 'start'
+ * @param {object} payload.data
  */
 process.on('message', function (payload) {
   if (payload.type === 'start') {
-    slice(payload.data.inputFile, payload.data.regions);
+    return slice(payload.data);
   }
 });
 
 /**
  * Execute slicer function with given params
  *
- * @param {string} inputFile
- * @param {[]} regions
+ * @param {object} params
+ * @param {string} params.inputDir
+ * @param {string} params.inputFile
+ * @param {string} params.outputDir
+ * @param {string} params.regionFile GeoJSON file with region polygons
  */
-function slice(inputFile, regions) {
-  geojsonSlicer.extractRegions(inputFile, regions, function () {
-    process.send({
-      type: 'done',
-      data: { inputFile: inputFile }
+function slice(params) {
+  try {
+
+    geojsonSlicer.extractRegions(params, function () {
+      stats.stop();
+      process.nextTick(process.exit.bind(null, 0));
     });
-    process.nextTick(process.exit.bind(null, 0));
-  });
+  }
+  catch( ex ) {
+    console.log(ex);
+    process.exit(500);
+  }
 }
 
 module.exports.slice = slice;

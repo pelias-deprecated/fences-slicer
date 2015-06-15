@@ -13,9 +13,9 @@ if (nconf.get('config')) {
 
 var config = nconf.get();
 
-if (! (config.inputDir && config.outputDir && config.regions) ) {
+if (! (config.inputDir && config.outputDir && config.regionFile) ) {
   console.error(colors.red('[Invalid usage]:'),
-    'Must specify inputDir, outputDir, and regions. If using config file, use --config=<path>');
+    'Must specify inputDir, outputDir, and regionFile. If using config file, use --config=<path>');
   process.exit(1);
 }
 
@@ -23,4 +23,4 @@ if (! (config.inputDir && config.outputDir && config.regions) ) {
  * Execute slicing process. Create output files with any polygons
  * overlapping the specified regions.
  */
-run(config.regions, config.inputDir, config.outputDir);
+run(config.regionFile, config.inputDir, config.outputDir);
