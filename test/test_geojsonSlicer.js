@@ -3,7 +3,9 @@ var fs = require('fs');
 
 module.exports.tests = {};
 
-function before(regionType) {
+function before(regionType, includeGeocodingInfo) {
+
+  includeGeocodingInfo = (includeGeocodingInfo !== undefined) ? includeGeocodingInfo : true;
 
   var context = {};
 
@@ -39,6 +41,13 @@ function before(regionType) {
       }
     ]
   };
+
+  if (includeGeocodingInfo) {
+    context.data.geocoding = {
+      version: '1.2.3',
+      license: 'MIT'
+    };
+  }
 
   fs.writeFileSync(context.inputFile, JSON.stringify(context.data, null, 2));
 
@@ -151,10 +160,23 @@ function after(context) {
 
 module.exports.tests.interface = function(test) {
 
+  test('extract polygons when no geocoding block in input', function (t) {
+    var context = before('self', false);
+    var outputFile = slicer.getOutputFile('./', context.outputDir, context.inputFile);
+    slicer.extractRegions(context.params, function () {
+      geocodingBlockShouldBeCreated(t, outputFile);
+      areaShouldBeExtracted(t, outputFile);
+      after(context);
+      t.end();
+    });
+  });
+
   test('extract polygons when self region', function (t) {
     var context = before('self');
+    var outputFile = slicer.getOutputFile('./', context.outputDir, context.inputFile);
     slicer.extractRegions(context.params, function () {
-      areaShouldBeExtracted(t, slicer.getOutputFile('./', context.outputDir, context.inputFile));
+      geocodingBlockShouldBeExtracted(t, outputFile, context.data.geocoding);
+      areaShouldBeExtracted(t, outputFile);
       after(context);
       t.end();
     });
@@ -214,6 +236,16 @@ function areaShouldBeExtracted(t, outputFile) {
   t.equal(results.features.length, 1, 'features extracted');
   t.equal(results.features[0].properties.name, 'admin_area', 'admin_area property found');
   fs.unlinkSync(outputFile);
+}
+
+function geocodingBlockShouldBeExtracted(t, outputFile, expectedGeocoding) {
+  var results = JSON.parse(fs.readFileSync(outputFile));
+  t.deepEqual(results.geocoding, expectedGeocoding, 'geocoding block matches expected');
+}
+
+function geocodingBlockShouldBeCreated(t, outputFile) {
+  var results = JSON.parse(fs.readFileSync(outputFile));
+  t.assert(results.geocoding.timestamp > 0, 'geocoding has timestamp property');
 }
 
 function areaShouldNotBeExtracted(t, outputFile) {
