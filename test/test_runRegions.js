@@ -246,8 +246,15 @@ function geocodingBlockShouldBeExtracted(t, outputFile, expectedGeocoding) {
 }
 
 function geocodingBlockShouldBeCreated(t, outputFile) {
+  var pkg = require('../package.json');
+  var moment = require('moment');
+
   var results = JSON.parse(fs.readFileSync(outputFile));
-  t.assert(results.geocoding.timestamp > 0, 'geocoding has timestamp property');
+  t.equal(results.geocoding.creation_date, moment().format('YYYY-MM-DD'), 'geocoding has creation_date');
+  t.equal(results.geocoding.generator.author, pkg.author, 'geocoding has author name');
+  t.equal(results.geocoding.generator.package, pkg.name, 'geocoding has package name');
+  t.equal(results.geocoding.generator.version, pkg.version, 'geocoding has package version');
+  t.equal(results.geocoding.license, 'ODbL (see http://www.openstreetmap.org/copyright)', 'geocoding has license');
 }
 
 module.exports.all = function (tape, common) {

@@ -3,6 +3,8 @@ var fs = require('fs-extra');
 var through2 = require('through2');
 var geojsonStream = require('geocodejson-stream');
 var simplify = require('simplify-geojson');
+var pkg = require('../package.json');
+var moment = require('moment');
 
 var names = [];
 
@@ -54,7 +56,7 @@ function parseGeocodingInfo(inputFile, callback) {
       return;
     }
     console.log('Geocoding block not found in input file. Creating.');
-    callback(null, {timestamp: Date.now()});
+    callback(null, buildGeocodingInfo());
   });
 }
 
@@ -127,6 +129,30 @@ function isCountry(obj, wanted) {
   if (!obj.properties.hasOwnProperty('flag')) {
     throw new Error('No flag: ' + getName(obj));
   }
+}
+
+
+/**
+ * Helper function for creating geocoding info block
+ *
+ * @returns {{
+ *  creation_date: 'YYYY-MM-DD',
+ *  generator: {
+ *    name: string,
+ *    version: string
+ *  },
+ *  license: string}}
+ */
+function buildGeocodingInfo() {
+  return {
+    creation_date: moment().format('YYYY-MM-DD'),
+    generator: {
+      author: pkg.author,
+      package: pkg.name,
+      version: pkg.version
+    },
+    license: 'ODbL (see http://www.openstreetmap.org/copyright)'
+  };
 }
 
 module.exports = run;
