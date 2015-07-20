@@ -18,6 +18,21 @@ You can feed a geojson file through the `fences-regions` command to sanitize and
 
 `$ fences-regions --inputGeojson=/etc/planet-fences/admin_level_2.geojson --outputFile=./regions.geojson`
 
+In order for input regions to show up in output regions they must meet the following requirements:
+
+* have `name` or `name:en` property
+* have `flag` property
+
+You could provide a `wanted` list of names as a filter. In that case the results will all be names matching the items in
+the `wanted` list.
+
+Regions in output will also be simplified (to 0.001).
+
+Output regions will each have the following `properties`:
+
+* `name_display` : name to be used for display purposes
+* `name` : sanitized version of the name that can be used for filenames
+
 
 ### standalone utility
 

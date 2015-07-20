@@ -1,6 +1,6 @@
 {
   "name": "fences-slicer",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Split large geojson file into smaller region files",
   "keywords": [
     "geojson",
@@ -9,7 +9,7 @@
     "polygon",
     "bounding box"
   ],
-  "author": "mapzen",
+  "author": "Mapzen",
   "main": "index.js",
   "bin": {
     "fences-slicer": "./bin/fences-slicer",
@@ -21,11 +21,12 @@
     "coverage": "node_modules/.bin/istanbul cover test/run.js"
   },
   "dependencies": {
-    "async": "^0.9.0",
+    "async": "^0.9.2",
     "colors": "^1.0.3",
     "fs-extra": "^0.18.0",
-    "geojson-stream": "0.0.0",
+    "geocodejson-stream": "0.0.1",
     "microtime": "^1.4.2",
+    "moment": "^2.10.3",
     "nconf": "^0.7.1",
     "polygon-lookup": "^1.0.2",
     "progress-stream": "^1.1.1",

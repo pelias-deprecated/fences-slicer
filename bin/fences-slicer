@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var run = require('./../src/run');
+var run = require('./../src/runSlicer');
 var nconf = require('nconf');
 var colors = require('colors');
 

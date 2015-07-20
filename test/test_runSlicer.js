@@ -57,7 +57,7 @@ module.exports.tests.interface = function(test) {
       }
     };
 
-    var run = proxyquire('./../src/run', {
+    var run = proxyquire('./../src/runSlicer', {
       'fs-extra': fsMock,
       'child_process': forkMock
     });
