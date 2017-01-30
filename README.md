@@ -1,5 +1,7 @@
 # fences-slicer
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/pelias/fences-slicer.svg)](https://greenkeeper.io/)
+
 Split large geojson file into smaller region files
 
 [![NPM](https://nodei.co/npm/fences-slicer.png)](https://nodei.co/npm/fences-slicer/)
