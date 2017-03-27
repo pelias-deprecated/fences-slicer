@@ -18,7 +18,8 @@
   "scripts": {
     "start": "time node app.js",
     "test": "node test/run.js | tap-spec",
-    "coverage": "node_modules/.bin/istanbul cover test/run.js"
+    "coverage": "node_modules/.bin/istanbul cover test/run.js",
+    "check-dependencies": "node_modules/.bin/npm-check --production"
   },
   "dependencies": {
     "async": "^0.9.2",
@@ -49,5 +50,8 @@
   "bugs": {
     "url": "https://github.com/pelias/fences-slicer/issues"
   },
-  "homepage": "https://github.com/pelias/fences-slicer"
+  "homepage": "https://github.com/pelias/fences-slicer",
+  "pre-commit": [
+    "check-dependencies"
+  ]
 }
